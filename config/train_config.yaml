@@ -1,0 +1,13 @@
+
+path: C:/Code/pythonProjects/RUSIK/data  # dataset root dir
+train: ./images/train  # train images (relative to 'path')
+val: ./images/train  # val images (relative to 'path')
+
+# Classes
+names:
+  0: forest
+  1: mountain
+  2: railway
+  3: road
+  4: swamp
+  5: water
