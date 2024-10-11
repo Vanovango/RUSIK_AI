@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import filedialog, font
 
 from PIL import Image, ImageTk
-
 from ultralytics import YOLO
 
 
@@ -32,9 +31,10 @@ class ImagePlacer:
         self.button_load_shape['font'] = self.my_font
         self.button_load_shape.pack()
 
+        # Массивы данных для хранения информации об различных объектах
         self.shapes = []  # Список для хранения объектов фигур
         self.image_refs = []  # Список для хранения ссылок на изображения (чтобы не удалялись сборщиком мусора)
-
+        self.commutation_lines = [] # Список для хранения ссылок на линии коммутации
         self.background_image = ''
 
     def load_background_image(self):
@@ -47,7 +47,7 @@ class ImagePlacer:
             image = Image.open(file_path)
 
             # predict image by train model
-            model = YOLO('./runs/segment/train4/weights/best.pt')
+            model = YOLO('./ready_models/pretrain_model.pt')
             predict_image = model(image, save=True, save_crop=True, project="./predict", name="test",
                                   exist_ok=True, show_labels=False, show_boxes=False)
 
@@ -75,6 +75,10 @@ class ImagePlacer:
             self.shapes.append(shape_id)  # Сохраняем ID фигуры
             self.make_movable(shape_id)
 
+        if len(self.shapes) >= 2:
+            line = self.canvas.create_line(10, 25, 200, 200, width=3, fill="red") # x1, y1, x2, y2
+            self.commutation_lines.append(line)
+
     def make_movable(self, shape_id):
         # Делаем фигуру перетаскиваемой
         self.canvas.tag_bind(shape_id, '<ButtonPress-1>', self.on_shape_press)
@@ -97,6 +101,17 @@ class ImagePlacer:
         # Обновляем данные для следующего сдвига
         self.drag_data['x'] = event.x
         self.drag_data['y'] = event.y
+        print(self.drag_data)
+
+    def move_line(self, ):
+        """
+        move line of commutation between 2 flag on the map
+        :return: None
+        """
+
+
+
+
 
 
 if __name__ == "__main__":
