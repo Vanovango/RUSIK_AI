@@ -16,7 +16,7 @@ class ImagePlacer:
         self.W = 900
         self.H = 600
 
-        # Создаем канвас для отображения изображения
+        # Создаем canvas для отображения изображения
         self.canvas = tk.Canvas(master, width=self.W, height=self.H, bg='white')
         self.canvas.pack()
 
@@ -31,11 +31,18 @@ class ImagePlacer:
         self.button_load_shape['font'] = self.my_font
         self.button_load_shape.pack()
 
+        # Кнопка отображения линий связи
+        self.button_load_shape = tk.Button(master, text="Отобразить линии связи", command=self.draw_communication)
+        self.button_load_shape['font'] = self.my_font
+        self.button_load_shape.pack()
+
         # Массивы данных для хранения информации об различных объектах
         self.shapes = []  # Список для хранения объектов фигур
         self.image_refs = []  # Список для хранения ссылок на изображения (чтобы не удалялись сборщиком мусора)
-        self.commutation_lines = [] # Список для хранения ссылок на линии коммутации
+        self.commutation_lines = []     # Список для хранения ссылок на линии коммутации
         self.background_image = ''
+
+        self.drag_data = {}
 
     def load_background_image(self):
         # open file
@@ -75,10 +82,6 @@ class ImagePlacer:
             self.shapes.append(shape_id)  # Сохраняем ID фигуры
             self.make_movable(shape_id)
 
-        if len(self.shapes) >= 2:
-            line = self.canvas.create_line(10, 25, 200, 200, width=3, fill="red") # x1, y1, x2, y2
-            self.commutation_lines.append(line)
-
     def make_movable(self, shape_id):
         # Делаем фигуру перетаскиваемой
         self.canvas.tag_bind(shape_id, '<ButtonPress-1>', self.on_shape_press)
@@ -95,23 +98,34 @@ class ImagePlacer:
         dx = event.x - self.drag_data['x']
         dy = event.y - self.drag_data['y']
 
-        # Перемещаем фигуру
+        # Перемещаем фигуру и линию
         self.canvas.move(shape_id, dx, dy)
 
         # Обновляем данные для следующего сдвига
         self.drag_data['x'] = event.x
         self.drag_data['y'] = event.y
-        print(self.drag_data)
+        # print(self.drag_data)
 
-    def move_line(self, ):
+    def draw_communication(self):
         """
         move line of commutation between 2 flag on the map
         :return: None
         """
+        # print('----------------------')
+        # print(self.shapes)
+        # print('----------------------')
+        # for i in self.shapes:
+        #     print(f"id {i} --- coordinates {self.canvas.coords(i)}")
+        x1 = self.canvas.coords(self.shapes[0])[0]
+        y1 = self.canvas.coords(self.shapes[0])[1] + 50
+        x2 = self.canvas.coords(self.shapes[1])[0]
+        y2 = self.canvas.coords(self.shapes[1])[1] + 50
 
-
-
-
+        line = self.canvas.create_line(
+            x1, y1,     # x1, y1
+            x2, y2,     # x2, y2
+            width=2, fill="red")
+        self.commutation_lines.append(line)
 
 
 if __name__ == "__main__":
