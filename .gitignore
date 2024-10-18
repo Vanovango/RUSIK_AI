@@ -125,9 +125,11 @@ celerybeat.pid
 .env
 .venv
 .predict
+.runs
 env/
 venv/
 predict/
+runs/
 ENV/
 env.bak/
 venv.bak/
