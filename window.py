@@ -54,7 +54,7 @@ class ImagePlacer:
             image = Image.open(file_path)
 
             # predict image by train model
-            model = YOLO('./ready_models/pretrain_model.pt')
+            model = YOLO('./ready_models/model2.pt')
             predict_image = model(image, save=True, save_crop=True, project="./predict", name="test",
                                   exist_ok=True, show_labels=False, show_boxes=False)
 
